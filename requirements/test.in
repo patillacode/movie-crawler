@@ -1,0 +1,5 @@
+-r development.in
+
+pytest
+coverage
+coverage-badge
