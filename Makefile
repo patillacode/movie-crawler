@@ -52,7 +52,7 @@ install-test-requirements:
 
 # requirements aliases
 build-requirements: build-dev-requirements build-production-requirements build-test-requirements
-dev-requirements: build-dev-requirements install-development-requirements install-package
-prod-requirements: build-production-requirements install-production-requirements install-package
-test-requirements: build-test-requirements install-test-requirements install-package
+dev-requirements: build-dev-requirements install-development-requirements
+prod-requirements: build-production-requirements install-production-requirements
+test-requirements: build-test-requirements install-test-requirements
 
