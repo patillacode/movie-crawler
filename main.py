@@ -1,5 +1,6 @@
 import argparse
 
+from movie_sites.filmaffinity import filmaffinity
 from movie_sites.imdb import imdb
 
 if __name__ == "__main__":
@@ -30,5 +31,7 @@ if __name__ == "__main__":
     if "imdb.com" in args.url:
         imdb(args.headless, args.url, args.folder)
     elif "filmaffinity.com" in args.url:
-        pass
-        # filmaffinity(args.headless, args.url, args.folder)
+        filmaffinity(args.headless, args.url, args.folder)
+    else:
+        print("The movie site provided is not supported.")
+        exit(1)

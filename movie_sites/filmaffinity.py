@@ -1,3 +1,4 @@
+import re
 import traceback
 
 from pathlib import Path
@@ -21,8 +22,15 @@ def write_to_file(
     print("creando fichero ...")
     Path(f"{folder}").mkdir(parents=True, exist_ok=True)
 
-    with open(f"{folder}/{title}.txt", "w") as file:
-        file.write(f"{title.upper()}\n")
+    # title is in the following format "xxxxx (zzzzzzzz)""
+    # I need to separate xxxxx from (zzzzzzzz) with regex
+    xxx = r"(.*) \((.*)\)"
+    match = re.search(xxx, title)
+    new_title = match.group(1)
+    title_type = title.replace(f"{new_title} ", "")
+
+    with open(f"{folder}/{new_title}.txt", "w") as file:
+        file.write(f"{new_title.upper()} {title_type}\n")
         file.write(f"{original_title}\n")
         file.write(".\n")
         file.write(f"{year}\n")
@@ -40,25 +48,62 @@ def write_to_file(
         file.write(".\n")
         file.write("Género\n")
         for genre in genres:
-            file.write(f"{genre}, ")
+            file.write(f"{genre} ")
         file.write("\n")
         file.write(".\n")
         file.write("Sinopsis\n")
         file.write(f"{sinopsis}\n")
 
-    print(f"fichero creado en: {Path(f'{folder}').resolve()}/{title}.txt")
+    print(f"fichero creado en: {Path(f'{folder}').resolve()}/{new_title}.txt")
 
 
 def decline_cookies(driver):
     try:
         cookies_prompt = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "/html/body/div[2]/div/div/div[2]/div/button[1]")
+                (By.XPATH, '//*[@id="qc-cmp2-ui"]/div[2]/div/button[3]/span')
             )
         )
         cookies_prompt.click()
     except NoSuchElementException:
         print("The cookies prompt was not found.")
+
+
+def extract_movie_id(url):
+    # The regex pattern to match the movie_id in the URL.
+    pattern = r"film(\d+)\.html"
+    match = re.search(pattern, url)
+    if match:
+        # The movie_id is the first group in the match.
+        return match.group(1)
+    else:
+        return None
+
+
+def get_cast(driver, url):
+    movie_id = extract_movie_id(url)
+    print("movie_id: ", movie_id)
+    driver.execute_script("window.open('');")
+    driver.switch_to.window(driver.window_handles[1])
+    driver.get(f"https://www.filmaffinity.com/es/fullcredits.php?movie_id={movie_id}")
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, '//*[@id="mt-content-cell"]/div[4]/div[1]')
+        )
+    )
+    castbox = driver.find_element(By.XPATH, '//*[@id="mt-content-cell"]/div[4]/div[1]')
+    cast = []
+    for div in castbox.find_elements(By.CLASS_NAME, "credit-li"):
+        actor = (
+            div.find_element(By.CLASS_NAME, "credit-info")
+            .find_element(By.CLASS_NAME, "name")
+            .text
+        )
+        cast.append(actor)
+        print(actor)
+    driver.close()
+    driver.switch_to.window(driver.window_handles[0])
+    return cast
 
 
 @retry(
@@ -68,7 +113,7 @@ def decline_cookies(driver):
     stop_max_attempt_number=3,
     wait_fixed=2000,
 )
-def imdb(headless, url, folder):
+def filmaffinity(headless, url, folder):
     try:
         with get_driver(headless) as driver:
             print("getting page at url: ", url)
@@ -78,77 +123,51 @@ def imdb(headless, url, folder):
                 EC.presence_of_element_located((By.TAG_NAME, "h1"))
             )
 
-            title = driver.find_element(By.CLASS_NAME, "hero__primary-text").text
+            title = driver.find_element(By.XPATH, '//*[@id="main-title"]/span').text
             print(f"título: {title}")
 
             original_title = driver.find_element(
                 By.XPATH,
-                "/html/body/div[2]/main/div/section[1]/section/div[3]/section/"
-                "section/div[2]/div[1]/div",
+                '//*[@id="left-column"]/dl[1]/dd[1]',
             ).text
             print(f"título original: {original_title}")
 
             year = driver.find_element(
                 By.XPATH,
-                (
-                    '//*[@id="__next"]/main/div/section[1]/section/div[3]/section/'
-                    "section/div[2]/div[1]/ul/li[1]/a"
-                ),
+                ('//*[@id="left-column"]/dl[1]/dd[2]'),
             ).text
             print(f"año: {year}")
 
             director = driver.find_element(
                 By.XPATH,
-                (
-                    '//*[@id="__next"]/main/div/section[1]/section/div[3]/section/'
-                    "section/div[3]/div[2]/div[1]/section/div[2]/div/ul/li[1]/div/ul/li/a"
-                ),
+                ('//*[@id="left-column"]/dl[1]/dd[5]/div'),
             ).text
             print(f"director: {director}")
 
             writer = driver.find_element(
                 By.XPATH,
-                (
-                    '//*[@id="__next"]/main/div/section[1]/section/div[3]/section/'
-                    "section/div[3]/div[2]/div[1]/section/div[2]/div/ul/li[2]/div/ul/li/a"
-                ),
+                ('//*[@id="left-column"]/dl[1]/dd[6]/div'),
             ).text
             print(f"guión: {writer}")
 
-            castbox = driver.find_element(
-                By.XPATH,
-                '//*[@id="__next"]/main/div/section[1]/section/div[3]/section/section'
-                "/div[3]/div[2]/div[1]/section/div[2]/div/ul/li[3]/div/ul",
-            )
             print("reparto:")
-            cast = []
-            # get the children of the castbox which is a ul
-            # get the li within the ul
-            for li in castbox.find_elements(By.TAG_NAME, "li"):
-                cast.append(li.text)
-                print(li.text)
+            cast = get_cast(driver, url)
 
             chips = driver.find_element(
                 By.XPATH,
-                (
-                    '//*[@id="__next"]/main/div/section[1]/section/div[3]/section/'
-                    "section/div[3]/div[2]/div[1]/section/div[1]/div[2]"
-                ),
+                ('//*[@id="left-column"]/dl[1]/dd[11]'),
             )
             print("género:")
             genres = []
-            for chip in chips.find_elements(By.TAG_NAME, "a"):
+            for chip in chips.find_elements(By.TAG_NAME, "span"):
                 genres.append(chip.text)
                 print(chip.text)
 
             print("sinopsis:")
             sinopsis = driver.find_element(
                 By.XPATH,
-                (
-                    '//*[@id="__next"]/main/div/section[1]/section/div[3]/section/'
-                    "section/div[3]/div[2]/div[1]/section/p"
-                ),
-            ).text
+                ('//*[@id="left-column"]/dl[1]/dd[13]'),
+            ).text.replace("(FILMAFFINITY)", "")
             print(sinopsis)
             write_to_file(
                 original_title,
@@ -159,7 +178,7 @@ def imdb(headless, url, folder):
                 cast,
                 genres,
                 sinopsis,
-                f"{folder}/imdb",
+                f"{folder}/filmaffinity",
             )
 
     except NoSuchElementException as err:
