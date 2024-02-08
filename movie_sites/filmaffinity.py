@@ -154,12 +154,12 @@ def filmaffinity(headless, url, folder):
             cast = get_cast(driver, url)
 
             chips = driver.find_element(
-                By.XPATH,
-                ('//*[@id="left-column"]/dl[1]/dd[11]'),
+                By.CLASS_NAME,
+                ("card-genres"),
             )
             print("género:")
             genres = []
-            for chip in chips.find_elements(By.CLASS_NAME, "class-genres"):
+            for chip in chips.find_elements(By.TAG_NAME, "span"):
                 genres.append(chip.text)
                 print(chip.text)
 
