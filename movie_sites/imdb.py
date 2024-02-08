@@ -90,7 +90,7 @@ def imdb(headless, url, folder):
                 print(f"título original: {original_title}")
             except NoSuchElementException:
                 print("The original title was not found.")
-                pass
+                original_title = "No disponible"
 
             year = driver.find_element(
                 By.XPATH,

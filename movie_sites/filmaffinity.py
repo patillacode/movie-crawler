@@ -163,12 +163,17 @@ def filmaffinity(headless, url, folder):
                 genres.append(chip.text)
                 print(chip.text)
 
-            print("sinopsis:")
-            sinopsis = driver.find_element(
-                By.XPATH,
-                ('//*[@id="left-column"]/dl[1]/dd[13]'),
-            ).text.replace("(FILMAFFINITY)", "")
-            print(sinopsis)
+            try:
+                print("sinopsis:")
+                sinopsis = driver.find_element(
+                    By.XPATH,
+                    ('//*[@id="left-column"]/dl[1]/dd[13]'),
+                ).text.replace("(FILMAFFINITY)", "")
+                print(sinopsis)
+            except NoSuchElementException:
+                print("The sinopsis was not found.")
+                sinopsis = ""
+
             write_to_file(
                 original_title,
                 title,
