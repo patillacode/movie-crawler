@@ -159,7 +159,7 @@ def filmaffinity(headless, url, folder):
             )
             print("género:")
             genres = []
-            for chip in chips.find_elements(By.TAG_NAME, "span"):
+            for chip in chips.find_elements(By.CLASS_NAME, "class-genres"):
                 genres.append(chip.text)
                 print(chip.text)
 
