@@ -81,12 +81,16 @@ def imdb(headless, url, folder):
             title = driver.find_element(By.CLASS_NAME, "hero__primary-text").text
             print(f"título: {title}")
 
-            original_title = driver.find_element(
-                By.XPATH,
-                "/html/body/div[2]/main/div/section[1]/section/div[3]/section/"
-                "section/div[2]/div[1]/div",
-            ).text
-            print(f"título original: {original_title}")
+            try:
+                original_title = driver.find_element(
+                    By.XPATH,
+                    "/html/body/div[2]/main/div/section[1]/section/div[3]/section/"
+                    "section/div[2]/div[1]/div",
+                ).text
+                print(f"título original: {original_title}")
+            except NoSuchElementException:
+                print("The original title was not found.")
+                pass
 
             year = driver.find_element(
                 By.XPATH,

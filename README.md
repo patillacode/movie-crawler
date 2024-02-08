@@ -3,22 +3,13 @@
 
 ### What?
 
+A quick and dirty movie crawler to fetch movie data from various sources.
 
 ### Why?
 
+A friend of mine asked me to help him with a project, nothing serious, just a simple web scraper to fetch movie data from various sources.
 
 ### Installation
-
-#### Plug & Play:
-```bash
-# Install via pipx
-pipx install movie-crawler
-
-# Install via pip
-pip install movie-crawler
-```
-
-#### Install for development:
 
 Clone the repository:
 ```bash
@@ -34,7 +25,7 @@ make install
 
 python -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements/development.txt
 ```
 
 #### System Requirements
