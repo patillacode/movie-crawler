@@ -35,7 +35,9 @@ def write_to_file(
 
     with open(f"{folder}/{title}.txt", "w") as file:
         file.write(f"{title}\n")
-        file.write(f"{original_title}\n")
+        if original_title:
+            file.write(f"{original_title}\n")
+
         file.write(".\n")
         file.write(f"{year}\n")
         file.write(".\n")
