@@ -26,11 +26,15 @@ def write_to_file(
     # I need to separate xxxxx from (zzzzzzzz) with regex
     xxx = r"(.*) \((.*)\)"
     match = re.search(xxx, title)
-    new_title = match.group(1)
-    title_type = title.replace(f"{new_title} ", "")
+    if match:
+        new_title = match.group(1)
+        title_type = title.replace(f"{new_title} ", "")
+        title = f"{new_title.upper()} {title_type}"
+    else:
+        title = title.upper()
 
-    with open(f"{folder}/{new_title}.txt", "w") as file:
-        file.write(f"{new_title.upper()} {title_type}\n")
+    with open(f"{folder}/{title}.txt", "w") as file:
+        file.write(f"{title}\n")
         file.write(f"{original_title}\n")
         file.write(".\n")
         file.write(f"{year}\n")
@@ -54,7 +58,7 @@ def write_to_file(
         file.write("Sinopsis\n")
         file.write(f"{sinopsis}\n")
 
-    print(f"fichero creado en: {Path(f'{folder}').resolve()}/{new_title}.txt")
+    print(f"fichero creado en: {Path(f'{folder}').resolve()}/{title}.txt")
 
 
 def decline_cookies(driver):
@@ -165,10 +169,14 @@ def filmaffinity(headless, url, folder):
 
             try:
                 print("sinopsis:")
-                sinopsis = driver.find_element(
-                    By.XPATH,
-                    ('//*[@id="left-column"]/dl[1]/dd[13]'),
+                sinopsis = chips.find_element(
+                    By.XPATH, "following-sibling::dd"
                 ).text.replace("(FILMAFFINITY)", "")
+
+                # sinopsis = driver.find_element(
+                #     By.XPATH,
+                #     ('//*[@id="left-column"]/dl[1]/dd[13]'),
+                # ).text.replace("(FILMAFFINITY)", "")
                 print(sinopsis)
             except NoSuchElementException:
                 print("The sinopsis was not found.")

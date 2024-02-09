@@ -88,9 +88,10 @@ def imdb(headless, url, folder):
                     "section/div[2]/div[1]/div",
                 ).text
                 print(f"título original: {original_title}")
+
             except NoSuchElementException:
                 print("The original title was not found.")
-                original_title = "No disponible"
+                original_title = ""
 
             year = driver.find_element(
                 By.XPATH,
