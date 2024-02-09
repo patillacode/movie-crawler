@@ -193,7 +193,7 @@ def filmaffinity(headless, url, folder):
                 cast,
                 genres,
                 sinopsis,
-                f"{folder}/filmaffinity",
+                folder,
             )
 
     except NoSuchElementException as err:

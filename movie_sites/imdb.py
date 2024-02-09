@@ -164,7 +164,7 @@ def imdb(headless, url, folder):
                 cast,
                 genres,
                 sinopsis,
-                f"{folder}/imdb",
+                folder,
             )
 
     except NoSuchElementException as err:

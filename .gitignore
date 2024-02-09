@@ -21,4 +21,4 @@ venv
 .autoenv.sh
 .autoenv_leave.sh
 docs/
-sumarios/*/*.txt
+sumarios/*.txt

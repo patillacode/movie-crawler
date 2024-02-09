@@ -1,6 +1,7 @@
 import argparse
 
 from movie_sites.filmaffinity import filmaffinity
+from movie_sites.iafd import iafd
 from movie_sites.imdb import imdb
 
 if __name__ == "__main__":
@@ -32,6 +33,8 @@ if __name__ == "__main__":
         imdb(args.headless, args.url, args.folder)
     elif "filmaffinity.com" in args.url:
         filmaffinity(args.headless, args.url, args.folder)
+    elif "iafd.com" in args.url:
+        iafd(args.headless, args.url, args.folder)
     else:
         print("The movie site provided is not supported.")
         exit(1)
