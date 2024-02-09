@@ -22,7 +22,7 @@ def write_to_file(
     print("creando fichero ...")
     Path(f"{folder}").mkdir(parents=True, exist_ok=True)
 
-    # title is in the following format "xxxxx (zzzzzzzz)""
+    # Sometimes title is in the following format "xxxxx (zzzzzzzz)""
     # I need to separate xxxxx from (zzzzzzzz) with regex
     xxx = r"(.*) \((.*)\)"
     match = re.search(xxx, title)

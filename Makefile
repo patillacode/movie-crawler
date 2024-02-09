@@ -1,4 +1,4 @@
-PYTHON_GLOBAL = python
+PYTHON_GLOBAL = python3
 VENV = venv/bin/
 PYTHON = $(VENV)python
 PIP = $(VENV)pip
@@ -15,7 +15,7 @@ run:
 
 create-venv:
 	$(info Creating virtual environment...)
-	@$(PYTHON) -m venv venv
+	@$(PYTHON_GLOBAL) -m venv venv
 
 upgrade-pip:
 	$(info Upgrading pip...)
