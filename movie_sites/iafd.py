@@ -56,7 +56,12 @@ def get_cast_member_info(headless, person):
     person_tag = person.find_element(By.TAG_NAME, "a")
     href = person_tag.get_attribute("href")
     name = person_tag.text
-    gender = re.match(".*/gender=(.)/", href).group(1)
+    try:
+        gender = re.match(".*/gender=(.)/", href).group(1)
+    except Exception as err:
+        # print(f"Error: {err}")
+        # print("ignoring gender for now...")
+        gender = None
 
     with get_driver(headless) as driver:
         driver.get(href)
