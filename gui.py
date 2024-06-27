@@ -142,7 +142,7 @@ def main():
     screen_width, screen_height = sg.Window.get_screen_size()
 
     # Define window size
-    window_width = 2000
+    window_width = 2500
     window_height = 200
 
     # Calculate position for bottom right
