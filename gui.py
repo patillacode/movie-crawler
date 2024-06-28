@@ -95,7 +95,7 @@ def main():
     layout = [
         [
             sg.Text("         URL"),
-            sg.Input(key="-URL-"),
+            sg.Input(key="-URL-", expand_x=True),
             sg.Button("Clear URL"),
         ],
         [
