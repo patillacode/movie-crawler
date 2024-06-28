@@ -150,7 +150,7 @@ def main():
     window = sg.Window(
         "Movie Crawler GUI",
         layout,
-        size=(800, 200),
+        size=(900, 200),
         font=("Helvetica", 18),
         icon="app_icon.png",
         location=position,
