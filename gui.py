@@ -142,7 +142,7 @@ def main():
     screen_width, screen_height = sg.Window.get_screen_size()
 
     # Define window size
-    window_width = 5000
+    window_width = 1000
     window_height = 200
 
     # Calculate position for bottom right
@@ -150,7 +150,7 @@ def main():
     window = sg.Window(
         "Movie Crawler GUI",
         layout,
-        # size=(800, 200),
+        size=(1500, 200),
         font=("Helvetica", 18),
         icon="app_icon.png",
         location=position,
